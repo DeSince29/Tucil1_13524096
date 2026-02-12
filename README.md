@@ -11,6 +11,7 @@ Program menggunakan algoritma Brute Force juga backtracking murni tanpa heuristi
 
 ## Struktur Folder
 Struktur direktori repository ini adalah sebagai berikut.
+```text
 Tucil1_NIM/
 ├── doc/                # Laporan Tugas Kecil
 ├── src/                # Source code program
@@ -21,6 +22,7 @@ Tucil1_NIM/
 │   ├── test_B.txt
 │   └── solution_test.txt
 └── README.md           # Penjelasan program
+'''
 
 ## Requirement
 Program ditulis menggunakan bahasa Python. Berikut adalah persyaratan sistem.
