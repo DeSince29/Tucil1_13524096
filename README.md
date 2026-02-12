@@ -22,7 +22,7 @@ Tucil1_NIM/
 │   ├── test_B.txt
 │   └── solution_test.txt
 └── README.md           # Penjelasan program
-'''
+```
 
 ## Requirement
 Program ditulis menggunakan bahasa Python. Berikut adalah persyaratan sistem.
