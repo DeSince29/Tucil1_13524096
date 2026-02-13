@@ -52,7 +52,7 @@ Sebelumnya dipastikan berada di direktori root repository (Tucil1_13524096).
 3. Masukkan nama file .txt yang berada di folder test/ (Contoh: test_A.txt).
 4. Program akan menampilkan proses pencarian secara Live dan hasil akhir beserta waktu eksekusi dan total kasus.
 
-### 1. Menjalankan Mode GUI
+### 2. Menjalankan Mode GUI
 1. Buka terminal
 2. Jalankan perintah berikut.
    ```bash
