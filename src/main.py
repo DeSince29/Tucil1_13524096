@@ -1,9 +1,15 @@
 import time
 import os
 
+# 
 def ReadFiles(name):
+    if os.path.exists(os.path.join("test", name)):
+        path = os.path.join("test", name)
+    else:
+        return None, 0, f"File {name} tidak ditemukan di folder test/."
+    
     try:
-        with open(name, 'r') as file:
+        with open(path, 'r') as file:
             lines = [line.strip() for line in file if line.strip]
 
             if not lines:
@@ -66,33 +72,35 @@ def solve(row, curr, board, n):
     
     return False
 
-# MAIN
-name = input("Masukkan nama file .txt: ")
-board, n, statusFile = ReadFiles(name)
-print(statusFile)
+# MAIN PROGRAM
+if __name__ == "__main__":
+    name = input("Masukkan nama file .txt (di folder test): ")
+    board, n, statusFile = ReadFiles(name)
+    print(statusFile)
 
-if board:
-    start = time.perf_counter()
-    solution = []
+    if board:
+        start = time.perf_counter()
+        solution = []
 
-    if solve(0, solution, board, n):
-        end = time.perf_counter()
-        print("\nSolusi ditemukan:")
+        if solve(0, solution, board, n):
+            end = time.perf_counter()
+            print("\nSolusi ditemukan:")
 
-        hasil = [list(row) for row in board]
-        for r, c in solution:
-            hasil[r][c] = '#'
-        PrintBoard(hasil, n)
+            hasil = [list(row) for row in board]
+            for r, c in solution:
+                hasil[r][c] = '#'
+            PrintBoard(hasil, n)
 
-        print(f"Waktu pencarian: {(end-start) * 1000:2f} ms")
-        print(f"Banyak kasus yang ditinjau: {iter} kasus")
+            print(f"Waktu pencarian: {(end-start) * 1000:.2f} ms")
+            print(f"Banyak kasus yang ditinjau: {iter} kasus")
 
-        save = input("Ingin menyimpan solusi? (Ya/Tidak): ")
-        if save.lower() == "ya":
-            output = "solusi_" + name
-            with open(output, "w") as file:
-                for row in hasil:
-                    file.write("".join(row) + "\n")
-            print(f"Solusi telah disimpan di {output}")
-    else:
-        print("Tidak ada solusi yang valid.")
+            save = input("Ingin menyimpan solusi? (Ya/Tidak): ")
+            if save.lower() == "ya":
+                output = "solusi_" + name
+                path = os.path.join("test", output)
+                with open(path, "w") as file:
+                    for row in hasil:
+                        file.write("".join(row) + "\n")
+                print(f"Solusi telah disimpan di test/{output}")
+        else:
+            print("Tidak ada solusi yang valid.")

@@ -45,12 +45,12 @@ Sebelumnya dipastikan berada di direktori root repository (Tucil1_13524096).
    ```bash
    python src/main.py
    ```
-3. Masukkan nama file .txt
+3. Masukkan nama file .txt yang berada di folder test/ (Contoh: test_A.txt).
 4. Program akan menampilkan proses pencarian secara Live dan hasil akhir beserta waktu eksekusi dan total kasus.
 
 ## Identitas Pembuat
 Program ini dibuat untuk memenuhi Tugas Kecil 1 Strategi Algoritma oleh:
 
-Nama: Moreno Syawali Ganda Sugita
-NIM: 13524096
-Kelas: K02
+* Nama: Moreno Syawali Ganda Sugita
+* NIM: 13524096
+* Kelas: K02
