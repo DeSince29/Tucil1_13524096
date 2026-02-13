@@ -1,7 +1,7 @@
 import time
 import os
 
-# 
+# Membaca file yang ada di folder test/
 def ReadFiles(name):
     if os.path.exists(os.path.join("test", name)):
         path = os.path.join("test", name)
@@ -18,16 +18,34 @@ def ReadFiles(name):
             board = [list(line) for line in lines]
             m = len(board)
             n = len(board[0])
+
+            # Ngecek papannya valid atau tidak
             for i, row in enumerate(board):
                 if len(row) != n:
                     return None, 0, f"Baris {i+1} memiliki panjang berbeda"
             if m != n:
-                return None, 0, f"Papan berbentuk persegi panjang. Tidak Valid"
+                return None, 0, "Papan berbentuk persegi panjang. Tidak Valid"
             
+            for r in range(n):
+                for c in range(n):
+                    if board[r][c] == '#':
+                        return None, 0, "File mengandung karakter '#'"
+            
+            unik = set()
+            for r in range(n):
+                for c in range(n):
+                    unik.add(board[r][c])
+            
+            colorCnt = len(unik)
+            if colorCnt != n:
+                return None, 0, f"Terdapat {colorCnt} warna, seharusnya {n} warna (sesuai ukuran papan)"
+
             return board, n, "Berhasil input file"
+        
     except FileNotFoundError:
         return None, 0, "File tidak ditemukan"
 
+# Mengecek apakah suatu kotak legal diletakkan Queen atau tidak
 def IsItLegal(row, col, curr, board):
     color = board[row][col]
     for r, c in curr:
@@ -37,23 +55,17 @@ def IsItLegal(row, col, curr, board):
             return False
     return True
 
-def PrintBoard(hasil, n):
+# Output board
+def PrintBoard(hasil):
     for row in hasil:
         print(" ".join(row))
     print("")
 
-def Update(row, col, board, n, curr):
-    os.system('cls' if os.name == 'nt' else 'clear')
-    temp = [list(r) for r in board]
-    for r, c in curr:
-        temp[r][c] = '#'
-    temp[row][col] = '?'
-    PrintBoard(temp, n)
-    time.sleep(0.05)
-
+# Parameter untuk menghitung kasus
 iter = 0
 
-def solve(row, curr, board, n):
+# Fungsi untuk menyelesaikan puzzle secara rekursif
+def solve(row, curr, board, n, show=None):
     global iter
 
     if row == n:
@@ -61,16 +73,38 @@ def solve(row, curr, board, n):
 
     for col in range(n):
         iter += 1
-        # Update(row, col, board, n, curr)
+
+        if show:
+            show(row, col, curr, board, n)
+
         if IsItLegal(row, col, curr, board):
             curr.append((row, col))
         
-            if solve(row+1, curr, board, n):
+            if solve(row+1, curr, board, n, show):
                 return True
         
             curr.pop()
+
+            if show:
+                show(row, col, curr, board, n, backtrack=True)
     
     return False
+
+def cli_show(row, col, curr, board, n, backtrack=False):
+    os.system('cls' if os.name == 'nt' else 'clear')
+    display = [list(r) for r in board]
+
+    for r, c in curr:
+        display[r][c] = '#'
+
+    if not backtrack and row < n:
+        display[row][col] = '?'
+
+    for line in display:
+        print(" ". join(line))
+
+    print(f"Mengecek Baris {row}, Kolom {col}\nBanyak Iterasi: {iter}")
+    time.sleep(0.05)
 
 # MAIN PROGRAM
 if __name__ == "__main__":
@@ -79,23 +113,23 @@ if __name__ == "__main__":
     print(statusFile)
 
     if board:
+        iter = 0
         start = time.perf_counter()
         solution = []
 
-        if solve(0, solution, board, n):
+        if solve(0, solution, board, n, show=cli_show):
             end = time.perf_counter()
             print("\nSolusi ditemukan:")
 
             hasil = [list(row) for row in board]
             for r, c in solution:
                 hasil[r][c] = '#'
-            PrintBoard(hasil, n)
+            PrintBoard(hasil)
 
             print(f"Waktu pencarian: {(end-start) * 1000:.2f} ms")
             print(f"Banyak kasus yang ditinjau: {iter} kasus")
 
-            save = input("Ingin menyimpan solusi? (Ya/Tidak): ")
-            if save.lower() == "ya":
+            if input("Ingin menyimpan solusi? (y/n): ").lower() == 'y':
                 output = "solusi_" + name
                 path = os.path.join("test", output)
                 with open(path, "w") as file:
@@ -104,3 +138,5 @@ if __name__ == "__main__":
                 print(f"Solusi telah disimpan di test/{output}")
         else:
             print("Tidak ada solusi yang valid.")
+
+# Ratu-san ribu HAHAHAHAHA (mmf stres dikit)

@@ -28,10 +28,14 @@ Tucil1_NIM/
 Program ditulis menggunakan bahasa Python. Berikut adalah persyaratan sistem.
 1. OS: Windows atau Linux.
 2. Bahasa Pemrograman: Python 3
-3. Library: Hanya menggunakan standard library sehingga tidak perlu instalasi tambahan
+3. Library:
    a. os: Manajemen file dan pembersihan layar terminal untuk Update.
    b. time: Pengukuran waktu eksekusi dan delay visualisasi Update.
    c. tkinter: Antarmuka Pengguna Grafis (GUI)
+   d. Pillow (PIL): Fitur menyimpan solusi dalam format gambar, berikut cara instalasi.
+      ```bash
+      pip install pillow
+      ```
 
 ## Cara Mengkompilasi Program
 Source Code tidak perlu dikompilasi karena menggunakan bahasa Python.
@@ -47,6 +51,16 @@ Sebelumnya dipastikan berada di direktori root repository (Tucil1_13524096).
    ```
 3. Masukkan nama file .txt yang berada di folder test/ (Contoh: test_A.txt).
 4. Program akan menampilkan proses pencarian secara Live dan hasil akhir beserta waktu eksekusi dan total kasus.
+
+### 1. Menjalankan Mode GUI
+1. Buka terminal
+2. Jalankan perintah berikut.
+   ```bash
+   python src/gui.py
+   ```
+3. Tekan "Buka File" dan pilih file yang ingin dicari solusinya
+4. Tekan "Temukan Solusi"
+5. Program akan menampilkan proses pencarian secara Live dan hasil akhir beserta waktu eksekusi dan total kasus.
 
 ## Identitas Pembuat
 Program ini dibuat untuk memenuhi Tugas Kecil 1 Strategi Algoritma oleh:
