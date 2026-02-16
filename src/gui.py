@@ -6,7 +6,11 @@ import time
 import os
 from PIL import Image, ImageDraw, ImageFont
 from ctypes import windll
-windll.shcore.SetProcessDpiAwareness(1)
+
+try:
+    windll.shcore.SetProcessDpiAwareness(1)
+except:
+    pass
 
 class GUI:
     def __init__(self, root):
@@ -108,7 +112,7 @@ class GUI:
         self.lbl_stats.config(text="")
         self.btn_solve.config(state=tk.NORMAL, bg="#2ECC71")
 
-    def draw_board(self, current_test_pos=None):
+    def draw_board(self):
         self.canvas.delete("all")
         if not self.board: return
 
@@ -128,22 +132,20 @@ class GUI:
                 self.canvas.create_text(x1+10, y1+10, text=char, font=("Segoe UI", 8), fill="#888")
 
         for r, c in self.solution:
-            self.draw_queen_icon(sx, sy, cell, r, c, "#2C3E50")
-        if current_test_pos:
-            self.draw_queen_icon(sx, sy, cell, current_test_pos[0], current_test_pos[1], "#E74C3C")
+            cx, cy = sx + c*cell + cell/2, sy + r*cell + cell/2
+            self.canvas.create_text(cx, cy, text="♛", fill="#2C3E50", font=("Segoe UI Symbol", int(cell*0.6)))
 
-    # Di sini pakai simbol biar bagus di GUI-nya, untuk export PNG itu Q biar kompatibel
-    def draw_queen_icon(self, sx, sy, cell, r, c, color):
-        cx, cy = sx + c*cell + cell/2, sy + r*cell + cell/2
-        self.canvas.create_text(cx, cy, text="♛", fill=color, font=("Segoe UI Symbol", int(cell*0.6)))
-
-    def update_visuals(self, row, col, curr, board, n, backtrack=False):
-        self.solution = list(curr)
-        test_pos = (row, col) if not backtrack else None
-        self.draw_board(test_pos)
-        self.lbl_stats.config(text=f"Baris {row+1}, Kolom {col+1} | Iterasi: {main.iter}")
-        self.root.update()
-        time.sleep(self.scale_speed.get())
+    def update_visuals(self, row, col, curr, board, n):
+        if main.iter % 1000 == 0:
+            self.solution = list(curr)
+            self.draw_board()
+            display_row = min(row + 1, n)
+            display_col = max(0, col) + 1 if col < n else n
+            self.lbl_stats.config(text=f"Mengecek Baris {display_row}, Kolom {display_col} | Iterasi: {main.iter}")
+            self.root.update()
+            speed = self.scale_speed.get()
+            if speed > 0:
+                time.sleep(speed)
 
     def run_solver(self):
         self.lbl_status.config(text="Sedang mencari solusi...", fg="#E67E22")
@@ -156,14 +158,18 @@ class GUI:
         start = time.perf_counter()
         found = main.solve(0, temp_sol, self.board, self.n, show=self.update_visuals)
         end = time.perf_counter()
+
+        self.solution = temp_sol
+        self.draw_board()
+        final_row = self.n if found else self.n
+        self.lbl_stats.config(text=f"Selesai | Total Iterasi: {main.iter}")
+        self.root.update()
         
         self.btn_solve.config(state=tk.NORMAL, bg="#2ECC71")
         self.btn_load.config(state=tk.NORMAL)
 
         if found:
-            self.solution = temp_sol
-            self.draw_board()
-            self.lbl_status.config(text="✅ Solusi Ditemukan!", fg="#27AE60")
+            self.lbl_status.config(text="Solusi Ditemukan!", fg="#27AE60")
             durasi = (end - start) * 1000
             self.lbl_stats.config(text=f"Waktu: {durasi:.2f} ms | Total Iterasi: {main.iter}")
             
@@ -171,6 +177,8 @@ class GUI:
                 self.save_solution(temp_sol)
         else:
             self.lbl_status.config(text="Tidak ada solusi.", fg="#C0392B")
+            durasi = (end - start) * 1000
+            self.lbl_stats.config(text=f"Waktu: {durasi:.2f} ms | Total Iterasi: {main.iter}")
 
     # Fitur Simpan TXT & Gambar
     def save_solution(self, solution):
